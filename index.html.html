@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Путь к сердцу Артёма 💗</title>
+<style>
+:root{--pink:#f28db7;--deep:#9b4776;--cream:#fff8fc;--lav:#eadfff}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;color:#783c60;background:linear-gradient(160deg,#ffe7f1,#eee5ff);min-height:100vh}
+main{max-width:900px;margin:auto;padding:18px}
+header{text-align:center;padding:12px}
+h1{margin:6px 0;color:#c8548b;font-size:clamp(26px,5vw,42px)}
+.subtitle{margin:8px 0}
+.panel{background:#fffdfd;border:2px solid #ffd0e3;border-radius:24px;padding:clamp(16px,4vw,28px);box-shadow:0 12px 35px #b65e8b20;margin:14px 0}
+.center{text-align:center}
+.hidden{display:none!important}
+button{border:0;border-radius:18px;padding:13px 18px;font-size:16px;font-weight:bold;cursor:pointer;background:#ee8eb7;color:white;box-shadow:0 4px 0 #ca6996; margin:5px}
+button:hover{filter:brightness(1.04);transform:translateY(-1px)}
+button:focus{outline:3px solid #8b5ca8;outline-offset:2px}
+.option{display:block;width:100%;max-width:580px;margin:10px auto;background:#fff0f7;color:#8a456a;border:2px solid #ffd1e4;box-shadow:none;text-align:left}
+.option:hover{background:#ffe1ee}
+#feedback{font-weight:bold;min-height:28px;margin-top:12px}
+#gameCanvas{display:block;width:100%;max-width:820px;height:auto;border-radius:18px;border:2px solid #f6bdd5;background:#c9efff;touch-action:pan-y}
+.hud{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:bold;margin:8px 0}
+.controls{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:10px}
+.controls button{min-width:76px}
+.note{font-size:14px;color:#93627e}
+.bigheart{font-size:48px;animation:pulse 1.2s infinite}
+@keyframes pulse{50%{transform:scale(1.13)}}
+.confession{line-height:1.9;font-size:17px;white-space:pre-line;text-align:left}
+.progress{height:10px;background:#ffe0ee;border-radius:99px;overflow:hidden;margin:14px 0}
+#progressFill{height:100%;width:0;background:linear-gradient(90deg,#ee8eb7,#b89cf3);transition:width .3s}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div style="font-size:32px">💗 🌷 🎁 💋</div>
+  <h1>Путь к сердцу Артёма</h1>
+  <p class="subtitle">Маленькое приключение, в котором каждый подарок — это частичка моей любви.</p>
+</header>
+
+<section id="welcome" class="panel center">
+  <div class="bigheart">💌</div>
+  <h2>Привет, мой Тёмка!</h2>
+  <p>Тебя ждут 5 вопросов о нашей истории. После каждого вопроса пройди маленький паркур, собери подарок и отправляйся дальше.</p>
+  <p>Управление на компьютере: <b>← →</b> или <b>A / D</b> — двигаться, <b>пробел</b> или <b>↑</b> — прыгать.</p>
+  <p>На телефоне можно пользоваться кнопками под игрой.</p>
+  <button onclick="startGame()">Начать наше приключение 💗</button>
+</section>
+
+<section id="questionPanel" class="panel center hidden">
+  <div class="note" id="questionCount"></div>
+  <div class="progress"><div id="progressFill"></div></div>
+  <h2 id="questionText"></h2>
+  <div id="options"></div>
+  <div id="feedback" aria-live="polite"></div>
+</section>
+
+<section id="parkourPanel" class="panel hidden">
+  <div class="hud"><span id="levelLabel">Паркур 1 из 5</span><span>🎁 Подарки: <span id="giftCount">0</span></span></div>
+  <p class="center">Прыгни по платформам, собери подарок 🎁 и доберись до сердечка 💗!</p>
+  <canvas id="gameCanvas" width="820" height="330" aria-label="Романтический паркур"></canvas>
+  <div class="controls">
+    <button id="leftBtn" aria-label="Влево">⬅️</button>
+    <button id="jumpBtn" aria-label="Прыжок">⬆️ Прыжок</button>
+    <button id="rightBtn" aria-label="Вправо">➡️</button>
+  </div>
+  <p class="center note">Если упадёшь — ничего страшного, попробуй ещё раз. 💗</p>
+  <div id="parkourMessage" class="center"></div>
+</section>
+
+<section id="rewardPanel" class="panel center hidden">
+  <div class="bigheart">💋</div>
+  <h2 id="rewardTitle">Подарочек для тебя!</h2>
+  <p id="rewardText"></p>
+  <button onclick="nextQuestion()">Продолжить наше приключение 💞</button>
+</section>
+
+<section id="finalPanel" class="panel hidden">
+  <div class="center">
+    <div class="bigheart">💖</div>
+    <h2>Самый главный подарок — моё признание</h2>
+    <p>Артём, ты прошёл все уровни! А теперь прочитай то, что я приготовила для тебя. 💌</p>
+  </div>
+  <div class="confession" id="confessionText"></div>
+  <div class="center">
+    <p style="font-size:22px">💗 💋 🎁 💗</p>
+    <button onclick="restartGame()">Пройти игру ещё раз 🔁</button>
+  </div>
+</section>
+<footer class="center note" style="padding:14px">Сделано с любовью Кариной для Артёма 💗</footer>
+</main>
+<script>
+const questions = [
+ {q:"1. Где мы познакомились?", options:["На улице","В классе","В Роблоксе"], correct:2,
+  message:"Мой любимый, именно там началась наша история. Я очень рада, что мы познакомились. Ты стал для меня невероятно дорогим человеком. 💗"},
+ {q:"2. Как мы перешли в ДС?", options:["Просто обменялись","Из-за того, что тебе давали бан, мы перешли туда","Мы не переходили в ДС"], correct:1,
+  message:"Дааа, любимый! Даже если всё началось с банов, я рада, что мы смогли продолжить общаться. Спасибо за наши разговоры и звонки. 💋"},
+ {q:"3. В какую игру мы пошли играть в конце?", options:["В Брукхейвен","Сидели в подиуме","В слова"], correct:2,
+  message:"Ты помнишь! Мне так дороги наши совместные игры и моменты, когда мы просто дурачимся и смеёмся. Обнимаю тебя мысленно, котик. 💞"},
+ {q:"4. Кто предложил встречаться?", options:["Карина","Тёмка","Никто не предложил"], correct:0,
+  message:"Да, это была я! И я очень рада, что решилась. Ты занимаешь особенное место в моём сердце, Артём. 💗"},
+ {q:"5. Кто первый поцеловал при встрече?", options:["Карина в щёчку","Артём в губы","Никто никого не целовал"], correct:0,
+  message:"Правильно, любимый! Это воспоминание навсегда останется одним из наших особенных моментов. Лови много-много поцелуйчиков! 💋💋💋"}
+];
+const rewards = [
+ {title:"Наше знакомство 💌", text:"Мой любимый, именно с этого момента началась наша история. Я даже не представляла, насколько важным человеком ты станешь для меня. Я очень сильно тебя люблю, Артём! ❤️"},
+ {title:"Наш путь в ДС 💗", text:"Спасибо, что мы можем разговаривать, смеяться и проводить время вместе. Наши звонки очень много для меня значат. 💋"},
+ {title:"Наши игровые вечера 🎮", text:"Даже обычная игра становится особенной, когда мы играем вместе. Спасибо за наши смешные и милые моменты, котик! 💞"},
+ {title:"Моё смелое решение 🌷", text:"Я рада, что однажды сказала тебе о своих чувствах. Ты очень дорог мне, и я хочу продолжать создавать с тобой тёплые воспоминания. ❤️"},
+ {title:"Наш первый поцелуй 💋", text:"Этот маленький момент очень дорог мне. Хочу, чтобы у нас впереди было ещё много добрых, счастливых и нежных воспоминаний. 💗"}
+];
+const confession = "Артём, я тебя очень сильно люблю. Ты стал самым любимым человеком в моей жизни. Я очень боюсь тебя потерять. Прости меня, пожалуйста, если я иногда поступаю неправильно. Я буду стараться изо всех сил становиться лучше. Спасибо тебе за все наши звонки и за то, что ты делаешь меня счастливой каждый день. Я невероятно сильно тебя люблю и мечтаю видеть тебя рядом каждое утро, а потом вместе отводить наших детей в садик. Спасибо за всё, котик. Я тебя очень-очень-очень-очень-очень сильно люблю! Удачки тебе, моя зайка. 💗💋";
+let qi=0, gifts=0, level=0;
+const $=id=>document.getElementById(id);
+function show(id){["welcome","questionPanel","parkourPanel","rewardPanel","finalPanel"].forEach(x=>$(x).classList.add("hidden"));$(id).classList.remove("hidden");}
+function startGame(){qi=0;gifts=0;level=0;showQuestion();}
+function showQuestion(){
+ show("questionPanel");$("questionCount").textContent=`Вопрос ${qi+1} из ${questions.length}`;
+ $("progressFill").style.width=(qi/questions.length*100)+"%";
+ const item=questions[qi];$("questionText").textContent=item.q;$("feedback").textContent="";
+ $("options").innerHTML="";
+ item.options.forEach((op,i)=>{const b=document.createElement("button");b.className="option";b.textContent=op;b.onclick=()=>answer(i);$("options").appendChild(b);});
+}
+function answer(i){
+ const item=questions[qi];
+ if(i!==item.correct){$("feedback").textContent="Почти, котик! 💗 Попробуй ещё раз — у тебя получится!";return;}
+ $("feedback").textContent="Правильно! 💋 Ты заслужил поцелуйчик и подарок!";
+ [...$("options").querySelectorAll("button")].forEach(b=>b.disabled=true);
+ setTimeout(()=>startParkour(),850);
+}
+function startParkour(){show("parkourPanel");level=0;$("levelLabel").textContent=`Паркур ${qi+1} из 5`;$("giftCount").textContent=gifts;$("parkourMessage").textContent="";initParkour();}
+function nextQuestion(){qi++;if(qi>=questions.length){$("progressFill").style.width="100%";$("confessionText").textContent=confession;show("finalPanel");return;}showQuestion();}
+function restartGame(){startGame();}
+
+const canvas=$("gameCanvas"),ctx=canvas.getContext("2d");
+let player, platforms, gift, goal, keys={}, frame, running=false, giftGot=false, won=false;
+function initParkour(){
+ cancelAnimationFrame(frame);running=true;giftGot=false;won=false;
+ player={x:35,y:245,w:27,h:34,vx:0,vy:0,on:false};
+ platforms=[{x:0,y:285,w:150,h:45},{x:190,y:245,w:115,h:20},{x:340,y:205,w:110,h:20},{x:485,y:245,w:100,h:20},{x:625,y:205,w:90,h:20},{x:745,y:270,w:75,h:60}];
+ gift={x:370,y:165,w:27,h:27};goal={x:770,y:226,w:32,h:42};
+ $("parkourMessage").textContent="";loop();
+}
+function drawHeart(x,y,size,color){ctx.save();ctx.translate(x,y);ctx.scale(size/30,size/30);ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(0,10);ctx.bezierCurveTo(-25,-5,-12,-20,0,-8);ctx.bezierCurveTo(12,-20,25,-5,0,10);ctx.fill();ctx.restore();}
+function loop(){
+ if(!running)return;
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ const grad=ctx.createLinearGradient(0,0,0,330);grad.addColorStop(0,"#bdefff");grad.addColorStop(1,"#fff0fa");ctx.fillStyle=grad;ctx.fillRect(0,0,820,330);
+ // stars and clouds
+ ctx.fillStyle="#fff";[[75,48],[220,72],[520,45],[700,78]].forEach(([x,y])=>{ctx.beginPath();ctx.arc(x,y,13,0,Math.PI*2);ctx.arc(x+14,y+5,16,0,Math.PI*2);ctx.arc(x+29,y,12,0,Math.PI*2);ctx.fill();});
+ for(let i=0;i<8;i++)drawHeart(45+i*105,115+(i%3)*20,12,"#f7b7d4");
+ platforms.forEach(p=>{ctx.fillStyle="#e99bc3";ctx.fillRect(p.x,p.y,p.w,p.h);ctx.fillStyle="#ffd8e9";ctx.fillRect(p.x,p.y,p.w,6);});
+ if(!giftGot){ctx.font="27px Arial";ctx.fillText("🎁",gift.x,gift.y+22);}
+ drawHeart(goal.x+13,goal.y+15,32,"#ed5e9b");ctx.font="15px Arial";ctx.fillStyle="#8b4770";ctx.fillText("ФИНИШ",goal.x-5,goal.y+42);
+ // player: cute running character
+ ctx.fillStyle="#fff";ctx.beginPath();ctx.arc(player.x+13,player.y+9,12,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#e96e9f";ctx.beginPath();ctx.arc(player.x+13,player.y+9,9,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle="#fff";ctx.fillRect(player.x+5,player.y+20,17,14);ctx.fillStyle="#8a4d70";ctx.fillRect(player.x+8,player.y+7,3,3);ctx.fillRect(player.x+16,player.y+7,3,3);
+ ctx.fillStyle="#e96e9f";ctx.fillRect(player.x+4,player.y+31,7,4);ctx.fillRect(player.x+16,player.y+31,7,4);
+ if(keys.left)player.vx=-3.2;else if(keys.right)player.vx=3.2;else player.vx*=.78;
+ player.x+=player.vx;player.vy+=.48;player.y+=player.vy;player.on=false;
+ platforms.forEach(p=>{if(player.x+player.w>p.x&&player.x<p.x+p.w&&player.y+player.h>=p.y&&player.y+player.h<=p.y+17&&player.vy>=0){player.y=p.y-player.h;player.vy=0;player.on=true;}});
+ if(player.x<0)player.x=0;if(player.x+player.w>820)player.x=820-player.w;
+ if(player.y>360){player.x=35;player.y=245;player.vy=0;player.vx=0;}
+ if(!giftGot&&player.x+player.w>gift.x&&player.x<gift.x+gift.w&&player.y+player.h>gift.y&&player.y<gift.y+gift.h){giftGot=true;gifts++;$("giftCount").textContent=gifts;}
+ if(player.x+player.w>goal.x&&player.x<goal.x+goal.w&&player.y+player.h>goal.y&&player.y<goal.y+goal.h){
+   if(giftGot){running=false;$("parkourMessage").innerHTML="<b>Ура! Ты собрал подарок и дошёл до сердечка! 💗</b><br><button onclick='showReward()'>Открыть подарок 🎁</button>";return;}
+   $("parkourMessage").textContent="Сначала собери подарок 🎁";
+ }
+ frame=requestAnimationFrame(loop);
+}
+function jump(){if(!running)return;if(player.on)player.vy=-10.5;}
+document.addEventListener("keydown",e=>{if(["ArrowLeft","ArrowRight","ArrowUp"," "].includes(e.key))e.preventDefault();if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")keys.left=true;if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")keys.right=true;if(e.key==="ArrowUp"||e.key===" ")jump();});
+document.addEventListener("keyup",e=>{if(e.key==="ArrowLeft"||e.key.toLowerCase()==="a")keys.left=false;if(e.key==="ArrowRight"||e.key.toLowerCase()==="d")keys.right=false;});
+function holdButton(id,key){const el=$(id);el.addEventListener("pointerdown",e=>{e.preventDefault();keys[key]=true;});["pointerup","pointerleave","pointercancel"].forEach(ev=>el.addEventListener(ev,()=>keys[key]=false));}
+holdButton("leftBtn","left");holdButton("rightBtn","right");$("jumpBtn").addEventListener("pointerdown",e=>{e.preventDefault();jump();});
+function showReward(){ $("rewardTitle").textContent=rewards[qi].title;$("rewardText").textContent=rewards[qi].text;show("rewardPanel");}
+</script>
+</body>
+</html>
